@@ -14,7 +14,7 @@ function substitution(values){
     clean();
     funcToRet = funcToRet + 'function ' + ans[i].Name+'(';
     i++;
-    while(ans[i].Type == 'ParameterDeclaration') {globalVars.push({key: ans[i].Name, value: ans[i].Value});
+    while(ans[i].Type == 'ParameterDeclaration') {globalVars.push({var: ans[i].Name, value: ans[i].Value});
         funcToRet = funcToRet + ans[i].Name+',';
         i++;}
     setParamValues(values);
@@ -49,7 +49,7 @@ function iterationOnFunc(cond){
 function getValue(key, arr){
     let v = '';
     for(let k=0; k<arr.length; k++){
-        if(arr[k].key== key)
+        if(arr[k].var== key)
             v = arr[k].value;
     }
     return v;
@@ -58,7 +58,7 @@ function getValue(key, arr){
 
 function inDic(key, arr){
     for(let k=0; k<arr.length; k++){
-        if(arr[k].key== key)
+        if(arr[k].var== key)
             return true;
     }
     return false;
@@ -155,12 +155,12 @@ function checkVarAssignment(){
 
 function checkVarAssignment2(){
     if (ans[i].Type == 'VariableDeclaration') {
-        local.push({key: ans[i].Name, value: ans[i].Value});
+        local.push({var: ans[i].Name, value: ans[i].Value});
         if(ans[i].Value.indexOf('[')>-1)
             setArrayValues(ans[i].Name,ans[i].Value,local);
     }
     else {
-        assignment.push({key: ans[i].Name, value: ans[i].Value});
+        assignment.push({var: ans[i].Name, value: ans[i].Value});
         if(inDic(ans[i].Name, globalVars)){
             addTabs();
             funcToRet=funcToRet+ans[i].Name+' = '+ans[i].Value+';\n';}
@@ -246,7 +246,7 @@ function setValues(values,arrays){
         for(let j=0; j < split.length; j++){
             if(split[j].includes('arr')){
                 globalVars[j].value= '' + arrays.shift();
-                setArrayValues(globalVars[j].key,globalVars[j].value,globalVars);
+                setArrayValues(globalVars[j].var,globalVars[j].value,globalVars);
             }
             else{
                 globalVars[j].value=split[j];
@@ -258,7 +258,7 @@ function setValues(values,arrays){
 function setArraysOnlyOrEmptyParams(values,arrayHolder){
     if(values.includes('arr')){
         globalVars[0].value=''+arrayHolder.shift();
-        setArrayValues(globalVars[0].key,globalVars[0].value,globalVars);
+        setArrayValues(globalVars[0].var,globalVars[0].value,globalVars);
     }
     else{
         globalVars[0].value=values;
